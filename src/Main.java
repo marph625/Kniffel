@@ -1,7 +1,3 @@
-import com.sun.java.swing.plaf.windows.WindowsTextAreaUI;
-import sun.java2d.pipe.AAShapePipe;
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -162,10 +158,16 @@ public class Main {
 
                 break;
             case "gs":
+                ArrayList<Integer> control4 = new ArrayList<>(
+                        Arrays.asList(1, 2, 3, 4, 5));
+                ArrayList<Integer> control5 = new ArrayList<>(
+                        Arrays.asList(2, 3, 4, 5, 6));
+
                 kept.sort(null);
-                if (kept.get(0) == 1 && kept.get(1) == 2 && kept.get(2) == 3 && kept.get(3) == 4 && kept.get(4) == 5 ||
-                        kept.get(0) == 2 && kept.get(1) == 3 && kept.get(2) == 4 && kept.get(3) == 5 && kept.get(4) == 6) {
+                if (kept.containsAll(control4) || kept.containsAll(control5)) {
                     scoreUpperHalf += 40;
+                } else {
+                    System.out.println("Keine große Straße");
                 }
 
                 break;
