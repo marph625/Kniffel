@@ -1,7 +1,9 @@
 import com.sun.java.swing.plaf.windows.WindowsTextAreaUI;
+import sun.java2d.pipe.AAShapePipe;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -23,6 +25,7 @@ public class Main {
         secondRound(rerolled);
         confirmRoll();
     }
+
     private static ArrayList<Integer> confirmRoll() {
 
         ArrayList<Integer> confirmedRoll = new ArrayList<>();
@@ -106,45 +109,65 @@ public class Main {
 
                 break;
             case "dp":
-                // TODO: Validation for dp, vp, fh, ks, gs, kn
-//                boolean isDp = false;
-//                int amount = 0;
-//                for (int i = 0; i < kept.size(); i++) {
-//                    if (kept.get(i) == kept.get(i+1) & kept.get(i) == kept.get(i+2) ||
-//                            kept.get(i) == kept.get(i+1) & kept.get(i) == kept.get(i+2) {
-//                        isDp = true;
-//                    }
-//                }
-//
-//                if (isDp) {
-//                    for (Integer ignored : confirmedRoll) {
-//                        scoreUpperHalf += 6;
-//                    }
-//                } else {
-//                    System.out.println("Das ist kein Dreierpasch");
-//                }
-
-                confirmedRoll.addAll(kept);
-
-                for (Integer ignored : confirmedRoll) {
-                    scoreUpperHalf += ignored;
+                kept.sort(null);
+                if ((kept.get(0) == kept.get(1) & kept.get(1) == kept.get(2)) ||
+                        (kept.get(1) == kept.get(2) & kept.get(2) == kept.get(3)) ||
+                        (kept.get(2) == kept.get(3) & kept.get(3) == kept.get(4)))  {
+                    confirmedRoll.addAll(kept);
+                    for (Integer ignored : confirmedRoll) {
+                        scoreUpperHalf += ignored;
+                    }
+                } else {
+                    System.out.println("Kein Dreierpasch");
                 }
+
                 break;
             case "vp":
-                confirmedRoll.addAll(kept);
-
-                for (Integer ignored : confirmedRoll) {
-                    scoreUpperHalf += ignored;
+                kept.sort(null);
+                if ((kept.get(0) == kept.get(1) & kept.get(1) == kept.get(2) & kept.get(2) == kept.get(3)) ||
+                        (kept.get(1) == kept.get(2) & kept.get(2) == kept.get(3) & kept.get(3) == kept.get(4)))  {
+                    confirmedRoll.addAll(kept);
+                    for (Integer ignored : confirmedRoll) {
+                        scoreUpperHalf += ignored;
+                    }
+                } else {
+                    System.out.println("Kein Viererpasch");
                 }
+
                 break;
             case "fh":
-                scoreUpperHalf += 25;
+                kept.sort(null);
+
+                if ((kept.get(0) == kept.get(1)) & (kept.get(2) == kept.get(3) & kept.get(3) == kept.get(4))) {
+                    scoreUpperHalf += 25;
+                } else {
+                    System.out.println("Kein Full House");
+                }
+
                 break;
             case "ks":
-                scoreUpperHalf += 30;
+                ArrayList<Integer> control1 = new ArrayList<>(
+                        Arrays.asList(1, 2, 3, 4));
+                ArrayList<Integer> control2 = new ArrayList<>(
+                        Arrays.asList(2, 3, 4, 5));
+                ArrayList<Integer> control3 = new ArrayList<>(
+                        Arrays.asList(3, 4, 5, 6));
+
+                kept.sort(null);
+                if (kept.containsAll(control1) || kept.containsAll(control2) || kept.containsAll(control3)) {
+                    scoreUpperHalf += 30;
+                } else {
+                    System.out.println("Keine kleine Straße");
+                }
+
                 break;
             case "gs":
-                scoreUpperHalf += 40;
+                kept.sort(null);
+                if (kept.get(0) == 1 && kept.get(1) == 2 && kept.get(2) == 3 && kept.get(3) == 4 && kept.get(4) == 5 ||
+                        kept.get(0) == 2 && kept.get(1) == 3 && kept.get(2) == 4 && kept.get(3) == 5 && kept.get(4) == 6) {
+                    scoreUpperHalf += 40;
+                }
+
                 break;
             case "kn":
 
@@ -154,6 +177,7 @@ public class Main {
                 } else {
                     System.out.println("Kein Kniffel");
                 }
+
                 break;
             case "ch":
                 confirmedRoll.addAll(kept);
@@ -161,6 +185,7 @@ public class Main {
                 for (Integer ignored : confirmedRoll) {
                     scoreUpperHalf += ignored;
                 }
+
                 break;
             default:
                 System.out.println("Ungültige Eingabe");
