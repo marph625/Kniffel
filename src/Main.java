@@ -134,7 +134,8 @@ public class Main {
             case "fh":
                 kept.sort(null);
 
-                if ((kept.get(0) == kept.get(1)) & (kept.get(2) == kept.get(3) & kept.get(3) == kept.get(4))) {
+                if (((kept.get(0) == kept.get(1)) & (kept.get(2) == kept.get(3) & kept.get(3) == kept.get(4))) ||
+                        (kept.get(0) == kept.get(1) & kept.get(1) == kept.get(2)) & (kept.get(3) == kept.get(4)) ) {
                     scoreUpperHalf += 25;
                 } else {
                     System.out.println("Kein Full House");
