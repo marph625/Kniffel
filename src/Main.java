@@ -12,7 +12,7 @@ public class Main {
     static int attempt, rollScore, scoreUpperHalf, scoreBottomHalf, finalScore, upperHalfSum;
 
     public static void main(String[] args) {
-
+        // TODO: Exception Handling, Multiplayer, Multiple Columns,
 
         defaultTable();
         welcomeOutput();
@@ -299,7 +299,7 @@ public class Main {
         for (int round = 1; round < 3; round++) {
             isHappy = false;
 
-            if (eyes != null) {
+            if (!eyes.isEmpty()) {
                 eyes = reroll(al);
             }
             attempt++;
