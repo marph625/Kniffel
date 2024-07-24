@@ -12,6 +12,8 @@ public class Main {
     static int attempt, rollScore, scoreUpperHalf, scoreBottomHalf, finalScore, upperHalfSum;
 
     public static void main(String[] args) {
+
+
         defaultTable();
         welcomeOutput();
 
@@ -380,7 +382,7 @@ public class Main {
         }
     }
     private static ArrayList<Integer> firstRoll() {
-        if (eyes != null)
+        if (!eyes.isEmpty())
             eyes.clear();
         while (eyes.size() < 5) {
             int result = d1.roll();
@@ -388,9 +390,8 @@ public class Main {
         }
         return eyes;
     }
-    private static ArrayList<Integer> reroll(ArrayList al) {
+    private static ArrayList reroll(ArrayList al) {
         int elements = al.size();
-
         al.clear();
 
         while (al.size() < elements) {
@@ -405,7 +406,8 @@ public class Main {
         System.out.println("###################################");
     }
     private static void scoreBoardOutput() {
-        System.out.println("\nGib eine der rechts stehenden Optionen ein:");
+
+        System.out.println("Sofern die Kniffel-Regeln bekannt sind, wird die Anwendung wie folgend bedient:");
         System.out.println("\n########################");
         System.out.println("Einer: 1 ###############");
         System.out.println("Zweier: 2 ##############");
@@ -422,5 +424,6 @@ public class Main {
         System.out.println("Kniffel: kn ############");
         System.out.println("Chance: ch #############");
         System.out.println("########################\n");
+
     }
 }
