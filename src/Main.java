@@ -12,7 +12,7 @@ public class Main {
     static int attempt, rollScore, scoreUpperHalf, scoreBottomHalf, finalScore, upperHalfSum;
 
     public static void main(String[] args) {
-        // TODO: Exception Handling, Multiplayer, Multiple Columns,
+        // TODO: Exception Handling, Multiplayer, Multiple Columns, Make cell scores immutable
 
         defaultTable();
         welcomeOutput();
@@ -22,7 +22,7 @@ public class Main {
             firstRound();
             secondRound(rerolled);
             confirmRoll();
-            currentTable(rollScore);
+            currentTable();
         }
     }
 
@@ -46,7 +46,7 @@ public class Main {
         column.put("Unterer Teil", scoreBottomHalf);
         column.put("Endsumme", finalScore);
     }
-    private static void currentTable(int i) {
+    private static void currentTable() {
 
         System.out.format("+---------+%n");
         System.out.format("| Spiel 1 |%n");
@@ -69,7 +69,7 @@ public class Main {
         // points must be mutable
         int points;
 
-        currentTable(rollScore);
+        currentTable();
         System.out.println("Welches Feld willst du eintragen?");
 
         // this scanner is local while the other is class wide so I should change that
@@ -298,8 +298,9 @@ public class Main {
         // by rolling at least 3 same integers for every number:
         // 3 * 1 + 3 * 2 + 3 * 3 + 4 * 3 + 5 * 3 + 6 * 3 = 3 + 6 + 9 + 12 + 15 + 18 = 63
         if (upperHalfSum >= 63) {
+            scoreUpperHalf = upperHalfSum + bonus;
             column.put("Bonus", bonus);
-            column.put("Oberer Teil", upperHalfSum + bonus);
+            column.put("Oberer Teil", scoreUpperHalf);
         }
         finalScore = scoreUpperHalf + scoreBottomHalf;
         column.put("Gesamt", upperHalfSum);
