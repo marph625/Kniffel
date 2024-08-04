@@ -1,51 +1,14 @@
 import java.util.*;
 
-public class Main {
+public class OOP {
 
-    static ArrayList<Integer> eyes = new ArrayList<>();
-    static ArrayList<Integer> kept = new ArrayList<>();
-    static ArrayList<Integer> rerolled = new ArrayList<>();
     static LinkedHashMap<String, Integer> column = new LinkedHashMap<>();
     static Scanner sc = new Scanner(System.in);
     static Dice d1 = new Dice();
     static boolean isHappy;
-    static int attempt, rollScore, scoreUpperHalf, scoreBottomHalf, finalScore, upperHalfSum;
+    static int attempt;
 
-    public static void main(String[] args) {
-
-//        Player p1 = new Player("Blue");
-//        Player p2 = new Player("Red");
-//
-//        Player[] players = {p1, p2};
-//
-//        welcomeOutput();
-//
-//        for (Player player : players) {
-//            OOP.defaultTable(player);
-//            for (int i = 0; i < 13; i++) {
-//                OOP.firstRound(player);
-//                OOP.secondRound(player);
-//                OOP.confirmRoll(player);
-//                OOP.currentTable(player);
-//            }
-//        }
-//
-//        System.exit(0);
-
-        // TODO: Exception Handling, Multiplayer, Multiple Columns, Make cell scores immutable
-        defaultTable();
-        welcomeOutput();
-
-        // there are 13 rows so there will be 13 rolls
-        for (int i = 0; i < 13; i++) {
-            firstRound();
-            secondRound(rerolled);
-            confirmRoll();
-            currentTable();
-        }
-    }
-
-    private static void test_two_rolls() {
+    static void test_two_rolls() {
         Player p1 = new Player("Blue");
         Player p2 = new Player("Red");
 
@@ -73,17 +36,16 @@ public class Main {
         System.out.println("Einzigartig: " + a3);
         System.out.println("Anzahl: " + a3.size());
     }
-
-    private static void defaultTable() {
+    static void defaultTable(Player player) {
         column.put("Einer", 0);
         column.put("Zweier", 0);
         column.put("Dreier", 0);
         column.put("Vierer", 0);
         column.put("Fünfer", 0);
         column.put("Sechser", 0);
-        column.put("Gesamt", scoreUpperHalf);
+        column.put("Gesamt", player.getUpperHalfSum());
         column.put("Bonus", 0);
-        column.put("Oberer Teil", scoreUpperHalf);
+        column.put("Oberer Teil", player.getScoreUpperHalf());
         column.put("Dreierpasch", 0);
         column.put("Viererpasch", 0);
         column.put("Full House", 0);
@@ -91,33 +53,33 @@ public class Main {
         column.put("Große Straße", 0);
         column.put("Kniffel", 0);
         column.put("Chance", 0);
-        column.put("Unterer Teil", scoreBottomHalf);
-        column.put("Endsumme", finalScore);
+        column.put("Unterer Teil", player.getScoreBottomHalf());
+        column.put("Endsumme", player.getFinalScore());
     }
-    private static void currentTable() {
+    static void currentTable(Player player) {
 
         System.out.format("+---------+%n");
         System.out.format("| Spiel 1 |%n");
         System.out.format("+---------+%n");
 
         String leftAlignment = "| %-2s |%n";
-        for (String single : column.keySet()) {
-            System.out.format(leftAlignment, single + ": " + column.get(single));
+        for (String single : player.getColumn().keySet()) {
+            System.out.format(leftAlignment, single + ": " + player.getColumn().get(single));
             //System.out.format("+---------+ %n");
         }
 
     }
-    private static void confirmRoll() {
+    static void confirmRoll(Player player) {
 
         ArrayList<Integer> confirmedRoll = new ArrayList<>();
-        rollScore = 0;
+        player.setRollScore(0);
 
         // bonus will never be changed
         final int bonus = 35;
         // points must be mutable
         int points;
 
-        currentTable();
+        currentTable(player);
         System.out.println("Welches Feld willst du eintragen?");
 
         // this scanner is local while the other is class wide so I should change that
@@ -129,7 +91,7 @@ public class Main {
                 points = 1;
 
                 // loop iterates through elements of kept and adds all the ones to another arraylist
-                for (Integer integer : kept) {
+                for (Integer integer : player.getKept()) {
                     if (integer == points) {
                         confirmedRoll.add(integer);
                     }
@@ -137,134 +99,135 @@ public class Main {
 
                 // for every found one in confirmedRoll 1 is added to rollScore
                 for (Integer ignored : confirmedRoll) {
-                    rollScore += points;
+                    player.setRollScore(player.getRollScore() + points);
                 }
 
                 // rollScore is added to the score
-                upperHalfSum += rollScore;
-                scoreUpperHalf += rollScore;
+
+                player.setUpperHalfSum(player.getUpperHalfSum() + player.getRollScore());
+                player.setScoreUpperHalf(player.getScoreUpperHalf() + player.getRollScore());
 
                 // column integer will be set from 0 to rollScore
-                column.put("Einer", rollScore);
+                column.put("Einer", player.getRollScore());
 
                 // same for 2 - 6
                 break;
             case "2":
                 points = 2;
-                for (Integer integer : kept) {
+                for (Integer integer : player.getKept()) {
                     if (integer == points) {
                         confirmedRoll.add(integer);
                     }
                 }
                 for (Integer ignored : confirmedRoll) {
-                    rollScore += points;
+                    player.setRollScore(player.getRollScore() + points);
                 }
-                upperHalfSum += rollScore;
-                scoreUpperHalf += rollScore;
-                column.put("Zweier", rollScore);
+                player.setUpperHalfSum(player.getUpperHalfSum() + player.getRollScore());
+                player.setScoreUpperHalf(player.getScoreUpperHalf() + player.getRollScore());
+                column.put("Zweier", player.getRollScore());
                 break;
             case "3":
                 points = 3;
-                for (Integer integer : kept) {
+                for (Integer integer : player.getKept()) {
                     if (integer == points) {
                         confirmedRoll.add(integer);
                     }
                 }
                 for (Integer ignored : confirmedRoll) {
-                    rollScore += points;
+                    player.setRollScore(player.getRollScore() + points);
                 }
-                upperHalfSum += rollScore;
-                scoreUpperHalf += rollScore;
-                column.put("Dreier", rollScore);
+                player.setUpperHalfSum(player.getUpperHalfSum() + player.getRollScore());
+                player.setScoreUpperHalf(player.getScoreUpperHalf() + player.getRollScore());
+                column.put("Zweier", player.getRollScore());
                 break;
             case "4":
                 points = 4;
-                for (Integer integer : kept) {
+                for (Integer integer : player.getKept()) {
                     if (integer == points) {
                         confirmedRoll.add(integer);
                     }
                 }
                 for (Integer ignored : confirmedRoll) {
-                    rollScore += points;
+                    player.setRollScore(player.getRollScore() + points);
                 }
-                upperHalfSum += rollScore;
-                scoreUpperHalf += rollScore;
-                column.put("Vierer", rollScore);
+                player.setUpperHalfSum(player.getUpperHalfSum() + player.getRollScore());
+                player.setScoreUpperHalf(player.getScoreUpperHalf() + player.getRollScore());
+                column.put("Zweier", player.getRollScore());
                 break;
             case "5":
                 points = 5;
-                for (Integer integer : kept) {
+                for (Integer integer : player.getKept()) {
                     if (integer == points) {
                         confirmedRoll.add(integer);
                     }
                 }
                 for (Integer ignored : confirmedRoll) {
-                    rollScore += points;
+                    player.setRollScore(player.getRollScore() + points);
                 }
-                upperHalfSum += rollScore;
-                scoreUpperHalf += rollScore;
-                column.put("Fünfer", rollScore);
+                player.setUpperHalfSum(player.getUpperHalfSum() + player.getRollScore());
+                player.setScoreUpperHalf(player.getScoreUpperHalf() + player.getRollScore());
+                column.put("Zweier", player.getRollScore());
                 break;
             case "6":
                 points = 6;
-                for (Integer integer : kept) {
+                for (Integer integer : player.getKept()) {
                     if (integer == points) {
                         confirmedRoll.add(integer);
                     }
                 }
                 for (Integer ignored : confirmedRoll) {
-                    rollScore += points;
+                    player.setRollScore(player.getRollScore() + points);
                 }
-                upperHalfSum += rollScore;
-                scoreUpperHalf += rollScore;
-                column.put("Sechser", rollScore);
+                player.setUpperHalfSum(player.getUpperHalfSum() + player.getRollScore());
+                player.setScoreUpperHalf(player.getScoreUpperHalf() + player.getRollScore());
+                column.put("Zweier", player.getRollScore());
                 break;
             case "dp":
 
                 // kept being sorted is critical for the following if statement as this makes things much easier
-                kept.sort(null);
+                player.getKept().sort(null);
 
                 // when the array is sorted and if there are three identical integers in kept, there are three
                 // different possible scenarios and one of them must be true for meeting the condition of a Dreierpasch
-                if ((kept.get(0) == kept.get(1) & kept.get(1) == kept.get(2)) ||
-                        (kept.get(1) == kept.get(2) & kept.get(2) == kept.get(3)) ||
-                        (kept.get(2) == kept.get(3) & kept.get(3) == kept.get(4)))  {
+                if ((player.getKept().get(0) == player.getKept().get(1) & player.getKept().get(1) == player.getKept().get(2)) ||
+                        (player.getKept().get(1) == player.getKept().get(2) & player.getKept().get(2) == player.getKept().get(3)) ||
+                        (player.getKept().get(2) == player.getKept().get(3) & player.getKept().get(3) == player.getKept().get(4)))  {
                     // if the condition is met, all integers will be added to rollScore
-                    confirmedRoll.addAll(kept);
+                    confirmedRoll.addAll(player.getKept());
                     for (Integer ignored : confirmedRoll) {
-                        rollScore += ignored;
+                        player.setRollScore(player.getRollScore() + ignored);
                     }
-                    scoreBottomHalf += rollScore;
-                    column.put("Dreierpasch", rollScore);
+                    player.setScoreBottomHalf(player.getScoreBottomHalf() + player.getRollScore());
+                    column.put("Dreierpasch", player.getRollScore());
                 } else {
                     System.out.println("Kein Dreierpasch");
                 }
                 break;
             case "vp":
-                kept.sort(null);
+                player.getKept().sort(null);
                 // like above but with only 2 scenarios
-                if ((kept.get(0) == kept.get(1) & kept.get(1) == kept.get(2) & kept.get(2) == kept.get(3)) ||
-                        (kept.get(1) == kept.get(2) & kept.get(2) == kept.get(3) & kept.get(3) == kept.get(4)))  {
-                    confirmedRoll.addAll(kept);
+                if ((player.getKept().get(0) == player.getKept().get(1) & player.getKept().get(1) == player.getKept().get(2) & player.getKept().get(2) == player.getKept().get(3)) ||
+                        (player.getKept().get(1) == player.getKept().get(2) & player.getKept().get(2) == player.getKept().get(3) & player.getKept().get(3) == player.getKept().get(4)))  {
+                    confirmedRoll.addAll(player.getKept());
                     for (Integer ignored : confirmedRoll) {
-                        rollScore += ignored;
+                        player.setRollScore(player.getRollScore() + ignored);
                     }
-                    scoreBottomHalf += rollScore;
-                    column.put("Viererpasch", rollScore);
+                    player.setScoreBottomHalf(player.getScoreBottomHalf() + player.getRollScore());
+                    column.put("Viererpasch", player.getRollScore());
                 } else {
                     System.out.println("Kein Viererpasch");
                 }
                 break;
             case "fh":
-                kept.sort(null);
+                player.getKept().sort(null);
                 // like above, when sorted there are two possible scenarios
-                if (((kept.get(0) == kept.get(1)) & (kept.get(2) == kept.get(3) & kept.get(3) == kept.get(4))) ||
-                        (kept.get(0) == kept.get(1) & kept.get(1) == kept.get(2)) & (kept.get(3) == kept.get(4)) ) {
-                    confirmedRoll.addAll(kept);
+                if (((player.getKept().get(0) == player.getKept().get(1)) & (player.getKept().get(2) == player.getKept().get(3) & player.getKept().get(3) == player.getKept().get(4))) ||
+                        (player.getKept().get(0) == player.getKept().get(1) & player.getKept().get(1) == player.getKept().get(2)) & (player.getKept().get(3) == player.getKept().get(4)) ) {
+                    confirmedRoll.addAll(player.getKept());
                     points = 25;
-                    rollScore += points;
-                    scoreBottomHalf += rollScore;
-                    column.put("Full House", rollScore);
+                    player.setRollScore(player.getRollScore() + points);
+                    player.setScoreBottomHalf(player.getScoreBottomHalf() + player.getRollScore());
+                    column.put("Full House", player.getRollScore());
                 } else {
                     System.out.println("Kein Full House");
                 }
@@ -278,18 +241,18 @@ public class Main {
                 ArrayList<Integer> control3 = new ArrayList<>(
                         Arrays.asList(3, 4, 5, 6));
 
-                kept.sort(null);
+                player.getKept().sort(null);
                 // after being sort, there are three scenarios and one must be true for the if-block to execute
-                if (kept.containsAll(control1) || kept.containsAll(control2) || kept.containsAll(control3)) {
+                if (player.getKept().containsAll(control1) || player.getKept().containsAll(control2) || player.getKept().containsAll(control3)) {
 
                     // I don't think this line is needed here
-                    confirmedRoll.addAll(kept);
+                    confirmedRoll.addAll(player.getKept());
 
                     // points are added to the score and scoresheet
                     points = 30;
-                    rollScore += points;
-                    scoreBottomHalf += rollScore;
-                    column.put("Kleine Straße", rollScore);
+                    player.setRollScore(player.getRollScore() + points);
+                    player.setScoreBottomHalf(player.getScoreBottomHalf() + player.getRollScore());
+                    column.put("Kleine Straße", player.getRollScore());
                 } else {
                     System.out.println("Keine kleine Straße");
                 }
@@ -301,70 +264,70 @@ public class Main {
                 ArrayList<Integer> control5 = new ArrayList<>(
                         Arrays.asList(2, 3, 4, 5, 6));
 
-                kept.sort(null);
-                if (kept.containsAll(control4) || kept.containsAll(control5)) {
-                    confirmedRoll.addAll(kept);
+                player.getKept().sort(null);
+                if (player.getKept().containsAll(control4) || player.getKept().containsAll(control5)) {
+                    confirmedRoll.addAll(player.getKept());
                     points = 40;
-                    rollScore += points;
-                    scoreBottomHalf += rollScore;
-                    column.put("Große Straße", rollScore);
+                    player.setRollScore(player.getRollScore() + points);
+                    player.setScoreBottomHalf(player.getScoreBottomHalf() + player.getRollScore());
+                    column.put("Große Straße", player.getRollScore());
                 } else {
                     System.out.println("Keine große Straße");
                 }
                 break;
             case "kn":
                 // every integer must be of the same value
-                if (kept.get(0) == kept.get(1) && kept.get(1) == kept.get(2) &&
-                        kept.get(2) == kept.get(3) && kept.get(3) == kept.get(4)) {
+                if (player.getKept().get(0) == player.getKept().get(1) && player.getKept().get(1) == player.getKept().get(2) &&
+                        player.getKept().get(2) == player.getKept().get(3) && player.getKept().get(3) == player.getKept().get(4)) {
 
-                    confirmedRoll.addAll(kept);
+                    confirmedRoll.addAll(player.getKept());
                     points = 50;
-                    rollScore += points;
-                    scoreBottomHalf += rollScore;
-                    column.put("Kniffel", rollScore);
+                    player.setRollScore(player.getRollScore() + points);
+                    player.setScoreBottomHalf(player.getScoreBottomHalf() + player.getRollScore());
+                    column.put("Kniffel", player.getRollScore());
                 } else {
                     System.out.println("Kein Kniffel");
                 }
                 break;
             case "ch":
                 // every integer in confirmedRoll will be added to the score
-                confirmedRoll.addAll(kept);
+                confirmedRoll.addAll(player.getKept());
                 for (Integer ignored : confirmedRoll) {
-                    rollScore += ignored;
+                    player.setRollScore(player.getRollScore() + ignored);
                 }
-                scoreBottomHalf += rollScore;
-                column.put("Chance", rollScore);
+                player.setScoreBottomHalf(player.getScoreBottomHalf() + player.getRollScore());
+                column.put("Chance", player.getRollScore());
                 break;
             default:
                 System.out.println("Ungültige Eingabe");
-                confirmRoll();
+                confirmRoll(player);
         }
-        kept.clear();
+        player.getKept().clear();
         System.out.println(confirmedRoll);
 
         // bonus is added if the score from 1 - 6 is at least 63 which is achieved
         // by rolling at least 3 same integers for every number:
         // 3 * 1 + 3 * 2 + 3 * 3 + 4 * 3 + 5 * 3 + 6 * 3 = 3 + 6 + 9 + 12 + 15 + 18 = 63
-        if (upperHalfSum >= 63) {
-            scoreUpperHalf = upperHalfSum + bonus;
+        if (player.getUpperHalfSum() >= 63) {
+            player.setScoreUpperHalf(player.getUpperHalfSum() + bonus);
             column.put("Bonus", bonus);
-            column.put("Oberer Teil", scoreUpperHalf);
+            column.put("Oberer Teil", player.getScoreUpperHalf());
         }
-        finalScore = scoreUpperHalf + scoreBottomHalf;
-        column.put("Gesamt", upperHalfSum);
-        column.put("Oberer Teil", scoreUpperHalf);
-        column.put("Unterer Teil", scoreBottomHalf);
-        column.put("Endsumme", finalScore);
+        player.setFinalScore(player.getScoreUpperHalf() + player.getScoreBottomHalf());
+        column.put("Gesamt", player.getUpperHalfSum());
+        column.put("Oberer Teil", player.getScoreUpperHalf());
+        column.put("Unterer Teil", player.getScoreBottomHalf());
+        column.put("Endsumme", player.getFinalScore());
     }
-    private static void firstRound() {
+    static void firstRound(Player player) {
         // boolean is set to true when a certain condition is met
         isHappy = false;
         // you can roll three times. attempt is incremented by 1 after every roll
         attempt = 0;
-        firstRoll();
+        oopFirstRoll(player);
         attempt++;
 
-        System.out.println("\n" + attempt + ". Wurf: " + eyes);
+        System.out.println("Spieler:" + player.getColor() + "\n" + attempt + ". Wurf: " + player.getEyes());
 
         // while loop runs until isHappy is set to true
         while (!isHappy) {
@@ -375,31 +338,33 @@ public class Main {
             if (input == 5) {
                 // next line took me a few hours
                 // this prevents rerolled from being empty when the first input is 5
-                rerolled = eyes;
+                player.setRerolled(player.getEyes());
                 // while loop ends at this point
                 isHappy = true;
             } else {
                 // elements will be switched between arrayLists
-                kept.add(eyes.get(input));
-                eyes.remove(eyes.get(input));
-                rerolled = eyes;
-                System.out.println("Behalten: " + kept);
-                System.out.println("Neu würfeln: " + rerolled);
+
+                player.getKept().add(player.getEyes().get(input));
+                player.getEyes().remove(player.getEyes().get(input));
+                player.setRerolled(player.getEyes());
+
+                System.out.println("Behalten: " + player.getKept());
+                System.out.println("Neu würfeln: " + player.getRerolled());
             }
         }
     }
-    private static void secondRound(ArrayList<Integer> al) {
+    static void secondRound(Player player) {
         for (int round = 1; round < 3; round++) {
             isHappy = false;
 
-            if (!eyes.isEmpty()) {
-                eyes = reroll(al);
+            if (!player.getEyes().isEmpty()) {
+                player.setEyes(reroll(player.getRerolled()));
             }
             attempt++;
 
-            System.out.println("\n" + attempt + ". Wurf");
-            System.out.println("Behalten: " + kept);
-            System.out.println("Gewürfelt: " + eyes);
+            System.out.println("Spieler:" + player.getColor() + "\n" + attempt + ". Wurf");
+            System.out.println("Behalten: " + player.getKept());
+            System.out.println("Gewürfelt: " + player.getEyes());
 
             while (!isHappy) {
                 System.out.println("Welche Würfel behalten?\nGib 5 ein, wenn du zufrieden bist.");
@@ -409,11 +374,13 @@ public class Main {
                 if (input == 5) {
                     isHappy = true;
                 } else {
-                    kept.add(eyes.get(input));
-                    eyes.remove(eyes.get(input));
-                    rerolled = eyes;
-                    System.out.println("Behalten: " + kept);
-                    System.out.println("Neu würfeln: " + rerolled);
+
+                    player.getKept().add(player.getEyes().get(input));
+                    player.getEyes().remove(player.getEyes().get(input));
+                    player.setRerolled(player.getEyes());
+
+                    System.out.println("Behalten: " + player.getKept());
+                    System.out.println("Gewürfelt: " + player.getRerolled());
                 }
             }
 
@@ -434,34 +401,23 @@ public class Main {
                         if (input2 == 5) {
                             wantsToRerollKept = true;
                         } else {
-                            eyes.add(kept.get(input2));
-                            kept.remove(kept.get(input2));
-                            System.out.println("Behalten: " + kept);
-                            System.out.println("Neu würfeln: " + eyes);
+                            player.getEyes().add(player.getKept().get(input2));
+                            player.getKept().remove(player.getKept().get(input2));
+                            System.out.println("Behalten: " + player.getKept());
+                            System.out.println("Gewürfelt: " + player.getEyes());
                         }
                     }
                 }
             }
         }
 
-        if (kept.size() < 5) {
+        if (player.getKept().size() < 5) {
             System.out.println("Restliche Würfel werden hinzugefügt...");
-            kept.addAll(eyes);
-            System.out.println("Behalten: " + kept);
+            player.getKept().addAll(player.getEyes());
+            System.out.println("Behalten: " + player.getKept());
         }
     }
-    private static ArrayList<Integer> firstRoll() {
-        // if eyes has elements they will be removed
-        if (!eyes.isEmpty())
-            eyes.clear();
-        // eyes will be given pseudo-random integers if they are not zero until eyes has five elements
-        while (eyes.size() < 5) {
-            int result = d1.roll();
-            if (result != 0) eyes.add(result);
-        }
-        return eyes;
-    }
-    private static ArrayList<Integer> oopFirstRoll(Player player) {
+    static ArrayList<Integer> oopFirstRoll(Player player) {
         // if eyes has elements they will be removed
         if (!player.getEyes().isEmpty())
             player.getEyes().clear();
@@ -472,8 +428,7 @@ public class Main {
         }
         return player.getEyes();
     }
-
-    private static ArrayList<Integer> reroll(ArrayList<Integer> al) {
+    static ArrayList<Integer> reroll(ArrayList<Integer> al) {
         // size of a given arrayList will be saved
         int elements = al.size();
         // arrayList will be cleared
@@ -487,12 +442,12 @@ public class Main {
         // rerolled arrayList will be returned
         return al;
     }
-    private static void welcomeOutput() {
+    static void welcomeOutput() {
         System.out.println("###################################");
         System.out.println("############# KNIFFEL #############");
         System.out.println("###################################");
     }
-    private static void userManual() {
+    static void userManual() {
 
         System.out.println("Sofern die Kniffel-Regeln bekannt sind, wird die Anwendung wie folgend bedient:");
         System.out.println("\n########################");
@@ -514,3 +469,4 @@ public class Main {
 
     }
 }
+
